@@ -24,7 +24,7 @@ import spock.lang.Specification
 
 class DefaultResolvedArtifactTest extends Specification {
 
-    def "artifacts are equal when module and artifact identifier are equal"() {
+    def "artifacts are equal when artifact identifier is equal"() {
         def dependency = dep("group", "module1", "1.2")
         def dependencySameModule = dep("group", "module1", "1.2")
         def dependency2 = dep("group", "module2", "1-beta")
@@ -41,7 +41,7 @@ class DefaultResolvedArtifactTest extends Specification {
 
         expect:
         artifact Matchers.strictlyEqual(equalArtifact)
-        artifact != differentModule
+        artifact Matchers.strictlyEqual(differentModule)
         artifact != differentId
     }
 

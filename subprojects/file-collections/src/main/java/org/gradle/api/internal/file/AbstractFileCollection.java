@@ -46,7 +46,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractFileCollection implements FileCollectionInternal, TaskDependencyContainer {
+public abstract class AbstractFileCollection implements FileCollectionInternal {
     /**
      * Returns the display name of this file collection. Used in log and error messages.
      *

@@ -39,26 +39,15 @@ public class DefaultResolvedArtifact implements ResolvedArtifact, ResolvableArti
     private final ComponentArtifactIdentifier artifactId;
     private final TaskDependency buildDependencies;
     private volatile Factory<File> artifactSource;
-    private final ResolvableArtifact sourceArtifact;
     private volatile File file;
     private volatile Throwable failure;
 
-    public DefaultResolvedArtifact(ModuleVersionIdentifier owner, IvyArtifactName artifact, ComponentArtifactIdentifier artifactId, TaskDependency buildDependencies, Factory<File> artifactSource) {
+    public DefaultResolvedArtifact(ModuleVersionIdentifier owner, IvyArtifactName artifact, ComponentArtifactIdentifier artifactId, TaskDependency builtBy, Factory<File> artifactSource) {
         this.owner = owner;
         this.artifact = artifact;
         this.artifactId = artifactId;
-        this.buildDependencies = buildDependencies;
-        this.sourceArtifact = null;
+        this.buildDependencies = builtBy;
         this.artifactSource = artifactSource;
-    }
-
-    public DefaultResolvedArtifact(ModuleVersionIdentifier owner, IvyArtifactName artifact, ComponentArtifactIdentifier artifactId, ResolvableArtifact sourceArtifact, File artifactFile) {
-        this.owner = owner;
-        this.artifact = artifact;
-        this.artifactId = artifactId;
-        this.buildDependencies = null;
-        this.sourceArtifact = sourceArtifact;
-        this.file = artifactFile;
     }
 
     @Override
@@ -69,11 +58,7 @@ public class DefaultResolvedArtifact implements ResolvedArtifact, ResolvableArti
                 return new TaskDependencyContainer() {
                     @Override
                     public void visitDependencies(TaskDependencyResolveContext context) {
-                        if (buildDependencies != null) {
-                            context.add(buildDependencies);
-                        } else if (sourceArtifact != null) {
-                            context.add(sourceArtifact);
-                        }
+                        context.add(buildDependencies);
                     }
                 };
             }
@@ -117,12 +102,12 @@ public class DefaultResolvedArtifact implements ResolvedArtifact, ResolvableArti
             return false;
         }
         DefaultResolvedArtifact other = (DefaultResolvedArtifact) obj;
-        return other.owner.equals(owner) && other.artifactId.equals(artifactId);
+        return other.artifactId.equals(artifactId);
     }
 
     @Override
     public int hashCode() {
-        return owner.hashCode() ^ artifactId.hashCode();
+        return artifactId.hashCode();
     }
 
     @Override
