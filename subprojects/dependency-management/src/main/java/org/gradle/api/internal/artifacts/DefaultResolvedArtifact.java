@@ -26,9 +26,10 @@ import org.gradle.api.internal.artifacts.ivyservice.resolveengine.artifact.Resol
 import org.gradle.api.internal.tasks.FinalizeAction;
 import org.gradle.api.internal.tasks.TaskDependencyContainer;
 import org.gradle.api.internal.tasks.TaskDependencyResolveContext;
-import org.gradle.api.tasks.TaskDependency;
 import org.gradle.internal.Factory;
 import org.gradle.internal.UncheckedException;
+import org.gradle.internal.component.local.model.ComponentFileArtifactIdentifier;
+import org.gradle.internal.component.model.DefaultIvyArtifactName;
 import org.gradle.internal.component.model.IvyArtifactName;
 
 import java.io.File;
@@ -37,12 +38,12 @@ public class DefaultResolvedArtifact implements ResolvedArtifact, ResolvableArti
     private final ModuleVersionIdentifier owner;
     private final IvyArtifactName artifact;
     private final ComponentArtifactIdentifier artifactId;
-    private final TaskDependency buildDependencies;
+    private final TaskDependencyContainer buildDependencies;
     private volatile Factory<File> artifactSource;
     private volatile File file;
     private volatile Throwable failure;
 
-    public DefaultResolvedArtifact(ModuleVersionIdentifier owner, IvyArtifactName artifact, ComponentArtifactIdentifier artifactId, TaskDependency builtBy, Factory<File> artifactSource) {
+    public DefaultResolvedArtifact(ModuleVersionIdentifier owner, IvyArtifactName artifact, ComponentArtifactIdentifier artifactId, TaskDependencyContainer builtBy, Factory<File> artifactSource) {
         this.owner = owner;
         this.artifact = artifact;
         this.artifactId = artifactId;
@@ -55,12 +56,7 @@ public class DefaultResolvedArtifact implements ResolvedArtifact, ResolvableArti
         context.add(new FinalizeAction() {
             @Override
             public TaskDependencyContainer getDependencies() {
-                return new TaskDependencyContainer() {
-                    @Override
-                    public void visitDependencies(TaskDependencyResolveContext context) {
-                        context.add(buildDependencies);
-                    }
-                };
+                return buildDependencies;
             }
 
             @Override
@@ -133,6 +129,13 @@ public class DefaultResolvedArtifact implements ResolvedArtifact, ResolvableArti
     @Override
     public ResolvedArtifact toPublicView() {
         return this;
+    }
+
+    @Override
+    public ResolvableArtifact transformedTo(File file) {
+        IvyArtifactName artifactName = DefaultIvyArtifactName.forFile(file, getClassifier());
+        ComponentArtifactIdentifier newId = new ComponentFileArtifactIdentifier(artifactId.getComponentIdentifier(), artifactName);
+        return new PreResolvedResolvableArtifact(owner, artifactName, newId, file, buildDependencies);
     }
 
     @Override

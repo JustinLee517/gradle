@@ -24,6 +24,8 @@ import org.gradle.api.internal.artifacts.ivyservice.modulecache.dynamicversions.
 import org.gradle.api.internal.artifacts.ivyservice.resolveengine.artifact.ResolvableArtifact;
 import org.gradle.api.internal.tasks.TaskDependencyContainer;
 import org.gradle.api.internal.tasks.TaskDependencyResolveContext;
+import org.gradle.internal.component.local.model.ComponentFileArtifactIdentifier;
+import org.gradle.internal.component.model.DefaultIvyArtifactName;
 import org.gradle.internal.component.model.IvyArtifactName;
 
 import javax.annotation.Nullable;
@@ -76,6 +78,13 @@ public class PreResolvedResolvableArtifact implements ResolvableArtifact, Resolv
             throw new UnsupportedOperationException();
         }
         return new DefaultResolvedModuleVersion(owner);
+    }
+
+    @Override
+    public ResolvableArtifact transformedTo(File file) {
+        IvyArtifactName artifactName = DefaultIvyArtifactName.forFile(file, getClassifier());
+        ComponentArtifactIdentifier newId = new ComponentFileArtifactIdentifier(artifactId.getComponentIdentifier(), artifactName);
+        return new PreResolvedResolvableArtifact(owner, artifactName, newId, file, builtBy);
     }
 
     @Override

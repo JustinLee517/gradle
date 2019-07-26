@@ -316,7 +316,11 @@ class CompositeFileCollectionSpec extends Specification {
 
     def collectionDependsOn(Task... tasks) {
         def collection = Stub(FileCollectionInternal)
-        collection.buildDependencies >> Stub(TaskDependency) { getDependencies(_) >> tasks }
+        collection.visitDependencies(_) >> { TaskDependencyResolveContext context ->
+            for (t in tasks) {
+                context.add(t)
+            }
+        }
         return collection
     }
 

@@ -16,18 +16,13 @@
 
 package org.gradle.api.internal.artifacts.transform;
 
-import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.artifacts.component.ComponentArtifactIdentifier;
 import org.gradle.api.attributes.AttributeContainer;
-import org.gradle.api.internal.artifacts.PreResolvedResolvableArtifact;
 import org.gradle.api.internal.artifacts.ivyservice.resolveengine.artifact.ArtifactVisitor;
 import org.gradle.api.internal.artifacts.ivyservice.resolveengine.artifact.ResolvableArtifact;
 import org.gradle.api.internal.attributes.AttributeContainerInternal;
 import org.gradle.api.internal.file.FileCollectionLeafVisitor;
 import org.gradle.internal.DisplayName;
-import org.gradle.internal.component.local.model.ComponentFileArtifactIdentifier;
-import org.gradle.internal.component.model.DefaultIvyArtifactName;
-import org.gradle.internal.component.model.IvyArtifactName;
 
 import java.io.File;
 import java.util.Map;
@@ -48,11 +43,8 @@ class TransformingArtifactVisitor implements ArtifactVisitor {
         TransformationResult result = artifactResults.get(artifact.getId());
         result.getTransformedSubject().ifSuccessfulOrElse(
             transformedSubject -> {
-                ResolvedArtifact sourceArtifact = artifact.toPublicView();
                 for (File output : transformedSubject.getFiles()) {
-                    IvyArtifactName artifactName = DefaultIvyArtifactName.forFile(output, sourceArtifact.getClassifier());
-                    ComponentArtifactIdentifier newId = new ComponentFileArtifactIdentifier(sourceArtifact.getId().getComponentIdentifier(), artifactName);
-                    ResolvableArtifact resolvedArtifact = new PreResolvedResolvableArtifact(sourceArtifact.getModuleVersion().getId(), artifactName, newId, output, artifact);
+                    ResolvableArtifact resolvedArtifact = artifact.transformedTo(output);
                     visitor.visitArtifact(variantName, target, resolvedArtifact);
                 }
             },
