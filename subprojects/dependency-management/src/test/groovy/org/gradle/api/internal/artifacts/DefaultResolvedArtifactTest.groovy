@@ -16,7 +16,7 @@
 package org.gradle.api.internal.artifacts
 
 import org.gradle.api.artifacts.component.ComponentArtifactIdentifier
-import org.gradle.api.tasks.TaskDependency
+import org.gradle.api.internal.tasks.TaskDependencyContainer
 import org.gradle.internal.Factory
 import org.gradle.internal.component.model.IvyArtifactName
 import org.gradle.util.Matchers
@@ -32,10 +32,10 @@ class DefaultResolvedArtifactTest extends Specification {
         def ivyArt = Stub(IvyArtifactName)
         def artifactId = Stub(ComponentArtifactIdentifier)
         def otherArtifactId = Stub(ComponentArtifactIdentifier)
-        def buildDependencies = Stub(TaskDependency)
+        def buildDependencies = Stub(TaskDependencyContainer)
 
         def artifact = new DefaultResolvedArtifact(dependency, ivyArt, artifactId, buildDependencies, artifactSource)
-        def equalArtifact = new DefaultResolvedArtifact(dependencySameModule, Stub(IvyArtifactName), artifactId, Stub(TaskDependency), Stub(Factory))
+        def equalArtifact = new DefaultResolvedArtifact(dependencySameModule, Stub(IvyArtifactName), artifactId, Stub(TaskDependencyContainer), Stub(Factory))
         def differentModule = new DefaultResolvedArtifact(dependency2, ivyArt, artifactId, buildDependencies, artifactSource)
         def differentId = new DefaultResolvedArtifact(dependency, ivyArt, otherArtifactId, buildDependencies, artifactSource)
 
@@ -50,7 +50,7 @@ class DefaultResolvedArtifactTest extends Specification {
         def artifactSource = Mock(Factory)
         def ivyArt = Stub(IvyArtifactName)
         def artifactId = Stub(ComponentArtifactIdentifier)
-        def buildDependencies = Stub(TaskDependency)
+        def buildDependencies = Stub(TaskDependencyContainer)
         def file = new File("result")
 
         when:
@@ -83,7 +83,7 @@ class DefaultResolvedArtifactTest extends Specification {
         def artifactSource = Mock(Factory)
         def ivyArt = Stub(IvyArtifactName)
         def artifactId = Stub(ComponentArtifactIdentifier)
-        def buildDependencies = Stub(TaskDependency)
+        def buildDependencies = Stub(TaskDependencyContainer)
         def failure = new RuntimeException()
 
         when:

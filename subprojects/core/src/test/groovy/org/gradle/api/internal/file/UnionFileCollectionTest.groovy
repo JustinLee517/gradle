@@ -18,7 +18,6 @@ package org.gradle.api.internal.file
 
 import org.gradle.api.Task
 import org.gradle.api.internal.tasks.TaskDependencyResolveContext
-import org.gradle.api.tasks.TaskDependency
 import org.gradle.util.UsesNativeServices
 import spock.lang.Specification
 
