@@ -9,10 +9,7 @@ Include only their name, impactful features should be called out separately belo
 -->
 
 <!-- 
-## Cancellable custom tasks
-
-When a build is cancelled (e.g. using CTRL+C), the threads executing each task are interrupted.
-Task authors only need to make their tasks respond to interrupts in order for the task to be cancellable.
+## 1
 
 details of 1
 
@@ -32,30 +29,6 @@ Switch your build to use Gradle @version@ by updating your wrapper:
 See the [Gradle 5.x upgrade guide](userguide/upgrading_version_5.html#changes_@baseVersion@) to learn about deprecations, breaking changes and other considerations when upgrading to Gradle @version@.
 
 <!-- Do not add breaking changes or deprecations here! Add them to the upgrade guide instead. --> 
-
-## Debug support for forked Java processes
-
-Gradle has now a new DSL element to configure debugging for Java processes.  
- 
-```groovy
-project.javaexec {
-
-  debugOptions {
-     enabled = true
-     port = 4455
-     server = true
-     suspend = true
-   }
-}
-```
-
-This configuration appends the following JVM argument to the process: `-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=4455` 
- 
-The `debugOptions` configuration is available for `project.javaExec` and for tasks using the `JavaExec` type, including the `test` task.
- 
-## Debug tests via the Tooling API
- 
-In addition to the new DSL element above, the Tooling API is capable of launching tests in debug mode. Clients can  invoke `TestLauncher.debugTestsOn(port)` to launch a test in debug mode. This feature will be used in the upcoming Buildship release.
 
 ## Promoted features
 Promoted features are features that were incubating in previous versions of Gradle but are now supported and subject to backwards compatibility.
