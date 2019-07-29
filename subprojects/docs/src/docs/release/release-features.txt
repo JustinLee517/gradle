@@ -1,3 +1,0 @@
- - Faster Groovy compilation
- - Test fixtures for Java projects
- - Manage plugin versions via settings script
